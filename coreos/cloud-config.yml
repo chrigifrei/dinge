@@ -1,0 +1,29 @@
+#cloud-config
+hostname: "<HOSTNAME>"
+coreos:
+  units:
+    - name: settimezone.service
+      command: start
+      content: |
+        [Unit]
+        Description=Set the time zone
+
+        [Service]
+        ExecStart=/usr/bin/timedatectl set-timezone Europe/Paris
+        RemainAfterExit=yes
+        Type=oneshot
+ssh_authorized_keys:
+  - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDg9ILc/TTz3YVAj1NXC7baoygrrnj13WmkplX6y9bJqYt7yElUPsYI45nNUthUjFRVOi+CJFWrPLRGFjx6zkmHWKSCP1kMU1wZwg7Ah+86ohS1oY0YCUG+RBHi2rblt/LOrGtdi3nCtNbOIt7l8Y7Y7HOojVmP0zsIpGZej+/WVr/pOgk3t3UD6olSp9TTjymZkukFHFb4xgkR/e4OH0Cs8xA91htfEh/H8aTTKmRoAGBWXw6wn8k5SYYlVRoW23bN2rsl7YWidPzGZjUlv2ySFGHUk7t2t31PNn58FzGAYGYyfNpVbESp2NsDJfDTIV49qt+6TmVZOHF25a0y2KYJ christian@apontis.ch
+write_files:
+  - path: /etc/ssh/sshd_config
+    permissions: 0600
+    owner: root:root
+    content: |
+      # Use most defaults for sshd configuration.
+      UsePrivilegeSeparation sandbox
+      Subsystem sftp internal-sftp
+
+      PermitRootLogin no
+      AllowUsers core
+      PasswordAuthentication no
+      ChallengeResponseAuthentication no
